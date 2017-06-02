@@ -18,8 +18,14 @@ func NewProvider(constructor interface{}, argPtrs ...interface{}) Provider {
 	}
 
 	fnType := reflect.TypeOf(constructor)
-	if fnType.NumOut() != 1 {
-		panic(fmt.Sprintf("constructor must have exactly 1 return value, found %v", fnType.NumOut()))
+	switch fnType.NumOut() {
+	case 1:
+	case 2:
+		if fnType.Out(1).String() != "error" {
+			panic(fmt.Sprintf("constructor second return value must be an error: %s", fnType.Out(1).String()))
+		}
+	default:
+		panic(fmt.Sprintf("constructor must have exactly 1 return value, or 1 return value and an error, found %v", fnType.NumOut()))
 	}
 
 	argCount := fnType.NumIn()
@@ -64,7 +70,15 @@ func (p provider) Provide(g Graph) reflect.Value {
 		args[i] = arg
 	}
 
-	return reflect.ValueOf(p.constructor).Call(args)[0]
+	results := reflect.ValueOf(p.constructor).Call(args)
+	if len(results) > 1 && !results[1].IsNil() {
+		err := results[1].Elem().Interface().(error)
+		if err != nil {
+			panic(fmt.Sprintf("error calling provider constructor for provider (%s): \n error: %s", p.String(), err.Error()))
+		}
+	}
+
+	return results[0]
 }
 
 // Type returns the type of value to expect from Provide
