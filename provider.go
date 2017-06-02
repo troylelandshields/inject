@@ -1,6 +1,7 @@
 package inject
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -14,7 +15,7 @@ type provider struct {
 func NewProvider(constructor interface{}, argPtrs ...interface{}) Provider {
 	fnValue := reflect.ValueOf(constructor)
 	if fnValue.Kind() != reflect.Func {
-		panic(fmt.Sprintf("constructor (%v) is not a function, found %v", fnValue, fnValue.Kind()))
+		panicSafe(fmt.Errorf("constructor (%v) is not a function, found %v", fnValue, fnValue.Kind()))
 	}
 
 	fnType := reflect.TypeOf(constructor)
@@ -22,23 +23,23 @@ func NewProvider(constructor interface{}, argPtrs ...interface{}) Provider {
 	case 1:
 	case 2:
 		if fnType.Out(1).String() != "error" {
-			panic(fmt.Sprintf("constructor second return value must be an error: %s", fnType.Out(1).String()))
+			panicSafe(fmt.Errorf("constructor second return value must be an error: %s", fnType.Out(1).String()))
 		}
 	default:
-		panic(fmt.Sprintf("constructor must have exactly 1 return value, or 1 return value and an error, found %v", fnType.NumOut()))
+		panicSafe(fmt.Errorf("constructor must have exactly 1 return value, or 1 return value and an error, found %v", fnType.NumOut()))
 	}
 
 	argCount := fnType.NumIn()
 	if argCount != len(argPtrs) {
-		panic(fmt.Sprintf("argPtrs (%d) must match constructor arguments (%d)", len(argPtrs), argCount))
+		panicSafe(fmt.Errorf("argPtrs (%d) must match constructor arguments (%d)", len(argPtrs), argCount))
 	}
 
 	for i, argPtr := range argPtrs {
 		if reflect.TypeOf(argPtr).Kind() != reflect.Ptr {
-			panic(fmt.Sprintf("argPtrs must all be pointers, found %v", reflect.TypeOf(argPtr)))
+			panicSafe(fmt.Errorf("argPtrs must all be pointers, found %v", reflect.TypeOf(argPtr)))
 		}
 		if reflect.ValueOf(argPtr).Elem().Kind() != fnType.In(i).Kind() {
-			panic("argPtrs must match constructor argument types")
+			panicSafe(errors.New("argPtrs must match constructor argument types"))
 		}
 	}
 
@@ -60,7 +61,7 @@ func (p provider) Provide(g Graph) reflect.Value {
 		inType := fnType.In(i)
 		if !argType.AssignableTo(inType) {
 			if !argType.ConvertibleTo(inType) {
-				panic(fmt.Sprintf(
+				panicSafe(fmt.Errorf(
 					"arg %d of type %q cannot be assigned or converted to type %q for provider constructor (%s)",
 					i, argType, inType, p.constructor,
 				))
@@ -74,7 +75,7 @@ func (p provider) Provide(g Graph) reflect.Value {
 	if len(results) > 1 && !results[1].IsNil() {
 		err := results[1].Elem().Interface().(error)
 		if err != nil {
-			panic(fmt.Sprintf("error calling provider constructor for provider (%s): \n error: %s", p.String(), err.Error()))
+			panicSafe(fmt.Errorf("error calling provider constructor for provider (%s): \n error: %s", p.String(), err.Error()))
 		}
 	}
 

@@ -49,7 +49,7 @@ func (g *graph) Define(ptr interface{}, provider Provider) Definition {
 func (g *graph) Resolve(ptr interface{}) reflect.Value {
 	ptrType := reflect.TypeOf(ptr)
 	if ptrType.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("ptr (%v) is not a pointer", ptrType))
+		panicSafe(fmt.Errorf("ptr (%v) is not a pointer", ptrType))
 	}
 
 	ptrValueElem := reflect.ValueOf(ptr).Elem()

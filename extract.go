@@ -9,16 +9,16 @@ import (
 func ExtractByType(g Graph, ptr interface{}) reflect.Value {
 	ptrType := reflect.TypeOf(ptr)
 	if ptrType.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("ptr (%v) is not a pointer", ptrType))
+		panicSafe(fmt.Errorf("ptr (%v) is not a pointer", ptrType))
 	}
 
 	targetType := reflect.ValueOf(ptr).Elem().Type()
 	values := g.ResolveByType(targetType)
 
 	if len(values) > 1 {
-		panic(fmt.Sprintf("more than one defined pointer matches the specified type (%v)", ptr))
+		panicSafe(fmt.Errorf("more than one defined pointer matches the specified type (%v)", ptr))
 	} else if len(values) == 0 {
-		panic(fmt.Sprintf("no defined pointer matches the specified type (%v)", ptr))
+		panicSafe(fmt.Errorf("no defined pointer matches the specified type (%v)", ptr))
 	}
 	value := values[0]
 
@@ -32,16 +32,16 @@ func ExtractByType(g Graph, ptr interface{}) reflect.Value {
 func ExtractAssignable(g Graph, ptr interface{}) reflect.Value {
 	ptrType := reflect.TypeOf(ptr)
 	if ptrType.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("ptr (%v) is not a pointer", ptrType))
+		panicSafe(fmt.Errorf("ptr (%v) is not a pointer", ptrType))
 	}
 
 	targetType := reflect.ValueOf(ptr).Elem().Type()
 	values := g.ResolveByAssignableType(targetType)
 
 	if len(values) > 1 {
-		panic(fmt.Sprintf("more than one defined pointer is assignable to the specified type (%v)", ptr))
+		panicSafe(fmt.Errorf("more than one defined pointer is assignable to the specified type (%v)", ptr))
 	} else if len(values) == 0 {
-		panic(fmt.Sprintf("no defined pointer is assignable to the specified type (%v)", ptr))
+		panicSafe(fmt.Errorf("no defined pointer is assignable to the specified type (%v)", ptr))
 	}
 	value := values[0]
 

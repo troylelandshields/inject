@@ -1,6 +1,7 @@
 package inject
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -20,12 +21,12 @@ type definition struct {
 
 func NewDefinition(ptr interface{}, provider Provider) Definition {
 	if reflect.TypeOf(ptr).Kind() != reflect.Ptr {
-		panic("ptr is not a pointer")
+		panicSafe(errors.New("ptr is not a pointer"))
 	}
 
 	targetType := reflect.ValueOf(ptr).Elem().Type()
 	if !provider.ReturnType().AssignableTo(targetType) {
-		panic(fmt.Sprintf("provider return type (%v) must be assignable to the ptr value type (%v)", provider.ReturnType(), targetType))
+		panicSafe(fmt.Errorf("provider return type (%v) must be assignable to the ptr value type (%v)", provider.ReturnType(), targetType))
 	}
 
 	return &definition{

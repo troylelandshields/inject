@@ -5,9 +5,8 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"github.com/karlkfi/inject"
+	"github.com/troylelandshields/inject"
 )
-
 
 func TestExtractByType(t *testing.T) {
 	RegisterTestingT(t)
@@ -20,9 +19,9 @@ func TestExtractByType(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&a1, inject.NewProvider(func() *alpha{ return &alpha{name: "a1"} } ))
-	graph.Define(&b1, inject.NewProvider(func() *beta{ return &beta{name: "b1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&a1, inject.NewProvider(func() *alpha { return &alpha{name: "a1"} }))
+	graph.Define(&b1, inject.NewProvider(func() *beta { return &beta{name: "b1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var a *alpha
 	inject.ExtractByType(graph, &a)
@@ -40,8 +39,8 @@ func TestExtractByTypeNoMatch(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&b1, inject.NewProvider(func() *beta{ return &beta{name: "b1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&b1, inject.NewProvider(func() *beta { return &beta{name: "b1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var a *alpha
 
@@ -61,10 +60,10 @@ func TestExtractByTypeMultiMatch(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&a1, inject.NewProvider(func() *alpha{ return &alpha{name: "a1"} } ))
-	graph.Define(&a2, inject.NewProvider(func() *alpha{ return &alpha{name: "a2"} } ))
-	graph.Define(&b1, inject.NewProvider(func() *beta{ return &beta{name: "b1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&a1, inject.NewProvider(func() *alpha { return &alpha{name: "a1"} }))
+	graph.Define(&a2, inject.NewProvider(func() *alpha { return &alpha{name: "a2"} }))
+	graph.Define(&b1, inject.NewProvider(func() *beta { return &beta{name: "b1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var a *alpha
 
@@ -82,8 +81,8 @@ func TestExtractAssignable(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&a1, inject.NewProvider(func() *alpha{ return &alpha{name: "a1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&a1, inject.NewProvider(func() *alpha { return &alpha{name: "a1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var o omega
 	inject.ExtractAssignable(graph, &o)
@@ -100,7 +99,7 @@ func TestExtractAssignableNoMatch(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var o omega
 
@@ -119,9 +118,9 @@ func TestExtractAssignableMultiMatch(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&a1, inject.NewProvider(func() *alpha{ return &alpha{name: "a1"} } ))
-	graph.Define(&b1, inject.NewProvider(func() *beta{ return &beta{name: "b1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&a1, inject.NewProvider(func() *alpha { return &alpha{name: "a1"} }))
+	graph.Define(&b1, inject.NewProvider(func() *beta { return &beta{name: "b1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var o omega
 

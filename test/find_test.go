@@ -5,7 +5,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"github.com/karlkfi/inject"
+	"github.com/troylelandshields/inject"
 )
 
 func TestFindByType(t *testing.T) {
@@ -20,10 +20,10 @@ func TestFindByType(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&a1, inject.NewProvider(func() *alpha{ return &alpha{name: "a1"} } ))
-	graph.Define(&a2, inject.NewProvider(func() *alpha{ return &alpha{name: "a2"} } ))
-	graph.Define(&b1, inject.NewProvider(func() *beta{ return &beta{name: "b1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&a1, inject.NewProvider(func() *alpha { return &alpha{name: "a1"} }))
+	graph.Define(&a2, inject.NewProvider(func() *alpha { return &alpha{name: "a2"} }))
+	graph.Define(&b1, inject.NewProvider(func() *beta { return &beta{name: "b1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var aList []*alpha
 	inject.FindByType(graph, &aList)
@@ -44,10 +44,10 @@ func TestFindAssignable(t *testing.T) {
 		g1 *gamma
 	)
 
-	graph.Define(&a1, inject.NewProvider(func() *alpha{ return &alpha{name: "a1"} } ))
-	graph.Define(&a2, inject.NewProvider(func() *alpha{ return &alpha{name: "a2"} } ))
-	graph.Define(&b1, inject.NewProvider(func() *beta{ return &beta{name: "b1"} } ))
-	graph.Define(&g1, inject.NewProvider(func() *gamma{ return &gamma{name: "g1"} } ))
+	graph.Define(&a1, inject.NewProvider(func() *alpha { return &alpha{name: "a1"} }))
+	graph.Define(&a2, inject.NewProvider(func() *alpha { return &alpha{name: "a2"} }))
+	graph.Define(&b1, inject.NewProvider(func() *beta { return &beta{name: "b1"} }))
+	graph.Define(&g1, inject.NewProvider(func() *gamma { return &gamma{name: "g1"} }))
 
 	var oList []omega
 	inject.FindAssignable(graph, &oList)

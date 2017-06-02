@@ -10,12 +10,12 @@ import (
 func FindByType(g Graph, listPtr interface{}) []reflect.Value {
 	ptrType := reflect.TypeOf(listPtr)
 	if ptrType.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("listPtr (%v) is not a pointer", ptrType))
+		panicSafe(fmt.Errorf("listPtr (%v) is not a pointer", ptrType))
 	}
 
 	listType := ptrType.Elem()
 	if listType.Kind() != reflect.Slice {
-		panic(fmt.Sprintf("listPtr (%v) is not a pointer to a slice or array", ptrType))
+		panicSafe(fmt.Errorf("listPtr (%v) is not a pointer to a slice or array", ptrType))
 	}
 
 	listValue := reflect.ValueOf(listPtr).Elem()
@@ -34,12 +34,12 @@ func FindByType(g Graph, listPtr interface{}) []reflect.Value {
 func FindAssignable(g Graph, listPtr interface{}) []reflect.Value {
 	ptrType := reflect.TypeOf(listPtr)
 	if ptrType.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("listPtr (%v) is not a pointer", ptrType))
+		panicSafe(fmt.Errorf("listPtr (%v) is not a pointer", ptrType))
 	}
 
 	listType := ptrType.Elem()
 	if listType.Kind() != reflect.Slice {
-		panic(fmt.Sprintf("listPtr (%v) is not a pointer to a slice or array", ptrType))
+		panicSafe(fmt.Errorf("listPtr (%v) is not a pointer to a slice or array", ptrType))
 	}
 
 	listValue := reflect.ValueOf(listPtr).Elem()

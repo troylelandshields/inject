@@ -1,6 +1,7 @@
 package inject
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -14,7 +15,7 @@ type autoProvider struct {
 func NewAutoProvider(constructor interface{}) Provider {
 	fnValue := reflect.ValueOf(constructor)
 	if fnValue.Kind() != reflect.Func {
-		panic("constructor is not a function")
+		panicSafe(errors.New("constructor is not a function"))
 	}
 
 	fnType := reflect.TypeOf(constructor)
@@ -22,10 +23,10 @@ func NewAutoProvider(constructor interface{}) Provider {
 	case 1:
 	case 2:
 		if fnType.Out(1).String() != "error" {
-			panic(fmt.Sprintf("constructor second return value must be an error: %s", fnType.Out(1).String()))
+			panicSafe(fmt.Errorf("constructor second return value must be an error: %s", fnType.Out(1).String()))
 		}
 	default:
-		panic(fmt.Sprintf("constructor must have exactly 1 return value, or 1 return value and an error, found %v", fnType.NumOut()))
+		panicSafe(fmt.Errorf("constructor must have exactly 1 return value, or 1 return value and an error, found %v", fnType.NumOut()))
 	}
 
 	return autoProvider{
@@ -43,9 +44,9 @@ func (p autoProvider) Provide(g Graph) reflect.Value {
 		argType := fnType.In(i)
 		values := g.ResolveByType(argType)
 		if len(values) > 1 {
-			panic(fmt.Sprintf("more than one defined pointer is assignable to the provider argument %d of type (%v)", i, argType))
+			panicSafe(fmt.Errorf("more than one defined pointer is assignable to the provider argument %d of type (%v)", i, argType))
 		} else if len(values) == 0 {
-			panic(fmt.Sprintf("no defined pointer is assignable to the provider argument %d of type (%v)", i, argType))
+			panicSafe(fmt.Errorf("no defined pointer is assignable to the provider argument %d of type (%v)", i, argType))
 		}
 		args[i] = values[0]
 	}
@@ -54,7 +55,7 @@ func (p autoProvider) Provide(g Graph) reflect.Value {
 	if len(results) > 1 && !results[1].IsNil() {
 		err := results[1].Elem().Interface().(error)
 		if err != nil {
-			panic(fmt.Sprintf("error calling provider constructor for provider (%s): \n error: %s", p.String(), err.Error()))
+			panicSafe(fmt.Errorf("error calling provider constructor for provider (%s): \n error: %s", p.String(), err.Error()))
 		}
 	}
 

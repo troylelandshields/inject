@@ -42,7 +42,7 @@ package yours
 import (
   "path/to/your/pkgA"
   "path/to/your/pkgB"
-  "github.com/karlkfi/inject"
+  "github.com/panicSafe/inject"
 )
 
 func main() {
@@ -157,7 +157,7 @@ Obscuring/finalizing is performed on all resolved definitions when the user call
 To install Inject, use go get:
 
 ```
-go get github.com/karlkfi/inject
+go get github.com/panicSafe/inject
 ```
 
 # Updating
@@ -165,7 +165,7 @@ go get github.com/karlkfi/inject
 To update Inject, use go get -u:
 
 ```
-go get -u github.com/karlkfi/inject
+go get -u github.com/panicSafe/inject
 ```
 
 # Dependencies
@@ -183,7 +183,7 @@ go get github.com/onsi/gomega
 To run Inject tests, use go test:
 
 ```
-go test github.com/karlkfi/inject/test
+go test github.com/panicSafe/inject/test
 ```
 
 # License
